@@ -2,6 +2,7 @@
 import	sys
 import	os
 import	subprocess
+from binascii import	unhexlify
 from termcolor import	colored
 from subprocess import	Popen, PIPE
 
@@ -45,7 +46,7 @@ shellcode:
 	os.system("nasm decoder.asm")
 	result = subprocess.Popen(['xxd -ps decoder'], shell=True, stdout=subprocess.PIPE).communicate()[0]
 	result = result.decode("utf-8").replace("\n", "")
-	sys.stdout.write(result)
+	sys.stdout.write(r"\x" + r"\x".join(result[n : n+2] for n in range(0, len(result), 2)))
 
 offset = get_offset(shellcode)
 print_decoder(shellcode, offset)
