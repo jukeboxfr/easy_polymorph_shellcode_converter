@@ -5,7 +5,7 @@ bar:
 	xor rcx, rcx
 	mov rcx, 3
 decoder:
-	sub byte [esi + ecx - 1], 0
+	sub byte [esi + ecx - 1], 1
 	sub rcx, 1
 	jnz decoder
 	jmp short shellcode
