@@ -1,15 +1,15 @@
 BITS 64
-jmp short foo
-bar:
+jmp short L1
+L2:
 	pop rsi
 	xor rcx, rcx
-	mov cl, 0x2a
-decoder:
-	xor byte [rsi + rcx - 1], 0xe
-	loop decoder
-	mov byte [rsi], 0xe
-	push rsi
-	ret
-foo:
-	call bar
-	
+	mov cl, 0x38
+L3:
+	xor byte [rsi + rcx], 0x71
+	sub cl, 1
+	jnz short L3
+	xor byte [rsi + rcx], 0x71
+	jmp short L4
+L1:
+	call L2
+L4:

