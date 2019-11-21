@@ -12,4 +12,4 @@ decoder:
 foo:
 	call bar
 shellcode:
-	NOP
+	

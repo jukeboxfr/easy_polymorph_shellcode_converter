@@ -23,7 +23,7 @@ def	get_offset(shellcode, offset = 1):
 	return offset
 
 def	print_encoded(shellcode, offset):
-	print(''.join([r'\x{:x}'.format((c ^ offset)) for c in shellcode]))
+	print(''.join([r'\x{:02x}'.format((c ^ offset)) for c in shellcode]))
 
 def	print_decoder(shellcode, offset):
 	f = open("decoder.asm", "w")
@@ -32,16 +32,16 @@ jmp short foo
 bar:
 	pop rsi
 	xor rcx, rcx
-	mov rcx, {}
+	mov cl, {}
 decoder:
-	xor byte [esi + ecx - 1], {}
+	xor byte [rsi + rcx - 1], {}
 	sub rcx, 1
 	jnz decoder
 	jmp short shellcode
 foo:
 	call bar
 shellcode:
-	""".format(shellcode_len, offset))
+	NOP""".format(shellcode_len, offset))
 	f.close()
 	os.system("nasm decoder.asm")
 	result = subprocess.Popen(['xxd -ps decoder'], shell=True, stdout=subprocess.PIPE).communicate()[0]
